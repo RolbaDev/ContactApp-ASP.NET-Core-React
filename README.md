@@ -50,4 +50,4 @@ Repozytorium zawiera aplikację do zarządzania kontaktami, która składa się 
 ## Dodatkowe informacje
 
 - Aby korzystać z aplikacji, upewnij się, że backend został uruchomiony i podłączony do hostowanej bazy danych PostgreSQL.
-- Po uruchomieniu, interfejs użytkownika frontendu będzie dostępny pod adresem `http://localhost:3000`, a dokumentacja API backendu pod adresem `http://localhost:5000/swagger/index.html`.
+- Po uruchomieniu, interfejs użytkownika frontendu będzie dostępny pod adresem `http://localhost:3000`, a dokumentacja API backendu pod adresem `http://localhost:5217/swagger/index.html`.
