@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "./axiosConfig"; // Importuj skonfigurowany axios
 import { useNavigate, useParams } from "react-router-dom";
 
 function EditContact() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // State to store form data
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,21 +22,16 @@ function EditContact() {
   const [subcategories2, setSubcategories2] = useState([]);
   const [showSubcategory, setShowSubcategory] = useState(true);
   const [showSubcategoryInput, setShowSubcategoryInput] = useState(false);
-  const [showSubcategoryNameInput, setShowSubcategoryNameInput] =
-    useState(false);
+  const [showSubcategoryNameInput, setShowSubcategoryNameInput] = useState(false);
 
-  // Fetch contact data and categories on component mount
   useEffect(() => {
     fetchContact();
     fetchCategories();
   }, []);
 
-  // Fetch contact data by ID
   const fetchContact = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:5217/api/Contacts/${id}`
-      );
+      const response = await axios.get(`http://localhost:5217/api/Contacts/${id}`);
       const contactData = response.data;
       setFormData({
         firstName: contactData.firstName,
@@ -53,7 +47,6 @@ function EditContact() {
           : "",
       });
 
-      // Determine which subcategory inputs to show based on category
       const selectedCategory = categories.find(
         (category) => category.id === contactData.categoryId
       );
@@ -81,7 +74,6 @@ function EditContact() {
     }
   };
 
-  // Fetch categories
   const fetchCategories = async () => {
     try {
       const response = await axios.get("http://localhost:5217/api/Categories");
@@ -91,15 +83,11 @@ function EditContact() {
     }
   };
 
-  // Fetch subcategories for business category
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5217/api/Subcategories"
-      );
+      const response = await axios.get("http://localhost:5217/api/Subcategories");
       const filteredSubcategories = response.data.filter(
-        (subcategory) =>
-          subcategory.name === "szef" || subcategory.name === "klient"
+        (subcategory) => subcategory.name === "szef" || subcategory.name === "klient"
       );
       setSubcategories(filteredSubcategories);
     } catch (error) {
@@ -107,12 +95,9 @@ function EditContact() {
     }
   };
 
-  // Fetch all subcategories for "Inny" category
   const fetchSubcategories2 = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5217/api/Subcategories"
-      );
+      const response = await axios.get("http://localhost:5217/api/Subcategories");
       setSubcategories2(response.data);
       console.log("Existing subcategory:", response.data);
     } catch (error) {
@@ -120,7 +105,6 @@ function EditContact() {
     }
   };
 
-  // Handle form input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -131,7 +115,6 @@ function EditContact() {
           : value,
     }));
 
-    // Determine which subcategory inputs to show based on category
     if (name === "categoryId") {
       const selectedCategory = categories.find(
         (category) => category.id === parseInt(value, 10)
@@ -149,7 +132,7 @@ function EditContact() {
         setShowSubcategory(true);
         setShowSubcategoryInput(false);
         setShowSubcategoryNameInput(false);
-        fetchSubcategories2();
+        fetchSubcategories();
       } else if (selectedCategory?.name === "Inny") {
         setShowSubcategory(true);
         setShowSubcategoryInput(false);
@@ -174,7 +157,6 @@ function EditContact() {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -184,12 +166,10 @@ function EditContact() {
 
       fetchSubcategories2();
 
-      // If "Inny" category and new subcategory name provided, create new subcategory
       if (showSubcategoryNameInput && formData.subcategoryName) {
         const existingSubcategory = subcategories2.find(
           (subcategory) => subcategory.name === formData.subcategoryName
         );
-        console.log("LOLOLO subcategory:", existingSubcategory);
         if (existingSubcategory) {
           subcategoryId = existingSubcategory.id;
         } else {
@@ -201,7 +181,6 @@ function EditContact() {
         }
       }
 
-      // Prepare updated form data
       const updatedFormData = {
         ...formData,
         birthDate: isoDate,
@@ -209,7 +188,6 @@ function EditContact() {
         subcategoryName: undefined,
       };
 
-      // Update contact data
       await axios.put(
         `http://localhost:5217/api/Contacts/${id}`,
         updatedFormData
@@ -220,7 +198,6 @@ function EditContact() {
     }
   };
 
-  // Render edit contact form
   return (
     <div className="container">
       <h2>Edit Contact</h2>
